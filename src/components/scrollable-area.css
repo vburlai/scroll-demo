@@ -1,0 +1,7 @@
+@import './shared/pallette.css';
+
+.container {
+    overflow-y: scroll;
+    border: 1px solid var(--secondary-color);
+    padding: 10px;
+}

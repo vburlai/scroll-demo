@@ -1,0 +1,8 @@
+@import './shared/pallette.css';
+
+.indicator {
+    text-align: center;
+    color: var(--secondary-color);
+    font-family: sans-serif;
+    line-height: 2em;
+}

@@ -1,0 +1,37 @@
+{
+  "name": "scroll-demo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Infinite Scroll demo",
+  "main": "dst/index.html",
+  "scripts": {
+    "prebuild": "rimraf dst/",
+    "build": "webpack",
+    "postbuild": "rimraf dst/tmp.file.js",
+    "dev": "webpack-serve --host 0.0.0.0 --content dst/ --open",
+    "test": "jest"
+  },
+  "author": "Vitaly Burlai",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "23.3.1",
+    "@types/react": "^16.7.17",
+    "@types/react-dom": "^16.0.11",
+    "css-loader": "1.0.0",
+    "file-loader": "1.1.11",
+    "jest": "23.6.0",
+    "rimraf": "2.6.2",
+    "style-loader": "0.21.0",
+    "ts-jest": "23.10.5",
+    "ts-loader": "4.4.2",
+    "typescript": "3.0.1",
+    "typings-for-css-modules-loader": "1.7.0",
+    "webpack": "4.16.4",
+    "webpack-cli": "3.1.0",
+    "webpack-serve": "2.0.2"
+  },
+  "dependencies": {
+    "react": "16.6.3",
+    "react-dom": "16.6.3"
+  }
+}
