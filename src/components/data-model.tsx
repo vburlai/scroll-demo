@@ -3,7 +3,7 @@ import { Element, generator } from '../model/elements-generator'
 
 export interface API {
     list: Array<Element>
-    loadMore: () => void
+    loadMore: () => Promise<void>
 }
 
 interface IProps {
@@ -16,10 +16,13 @@ interface IState {
 
 const DEFAULT_CHUNK_SIZE = 5
 
+const LATENCY_MS = 100
+const TURNOVER_MS = 500
+
 export default class DataModel extends React.Component<IProps, IState> {
     state: IState
     iterator: Iterator<Element>
-    loadMore: () => void
+    loadMore: () => Promise<void>
 
     constructor(props: IProps) {
         super(props)
@@ -27,7 +30,7 @@ export default class DataModel extends React.Component<IProps, IState> {
             list: []
         }
         this.iterator = generator()
-        this.loadMore = () => {
+        const loadMore = (done: () => void) => () => {
             const newElements = Array.from(
                 { length: DEFAULT_CHUNK_SIZE },
                 () => this.iterator.next().value
@@ -35,8 +38,14 @@ export default class DataModel extends React.Component<IProps, IState> {
 
             this.setState(({ list }) => ({
                 list: list.concat(newElements)
-            }))
+            }), done)
         }
+        this.loadMore = () => new Promise(
+            (resolve) => setTimeout(
+                loadMore(resolve),
+                LATENCY_MS + TURNOVER_MS * Math.random()
+            )
+        )
     }
 
     render() {
