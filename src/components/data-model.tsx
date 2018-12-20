@@ -19,7 +19,7 @@ const DEFAULT_CHUNK_SIZE = 5
 const LATENCY_MS = 100
 const TURNOVER_MS = 500
 
-export default class DataModel extends React.Component<IProps, IState> {
+export default class DataModel extends React.PureComponent<IProps, IState> {
     state: IState
     iterator: Iterator<Element>
     loadMore: () => Promise<void>

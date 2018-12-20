@@ -9,7 +9,7 @@ interface IProps {
     addPadding: (height: number) => void
 }
 
-export default class ListElement extends React.Component {
+export default class ListElement extends React.PureComponent {
     top: number
     height: number
     ref: React.RefObject<HTMLDivElement>

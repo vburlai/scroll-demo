@@ -8,7 +8,7 @@ interface IState {
     hasError: boolean
 }
 
-export default class ErrorBoundary extends React.Component<IProps, IState> {
+export default class ErrorBoundary extends React.PureComponent<IProps, IState> {
     state: IState
     props: IProps
 

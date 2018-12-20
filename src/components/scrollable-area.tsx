@@ -20,7 +20,7 @@ interface IState {
 // triggers loadMore() prop
 const LOADER_SENSITIVITY = 0.1
 
-export default class ScrollableArea extends React.Component<IProps, IState> {
+export default class ScrollableArea extends React.PureComponent<IProps, IState> {
     state: IState
     addPadding: (height: number) => void
     ref: React.RefObject<HTMLDivElement>
