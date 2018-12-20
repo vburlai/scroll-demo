@@ -11,7 +11,6 @@ interface IProps extends API {
 }
 
 interface IState {
-    scrollTop: number,
     paddingTop: number,
 }
 
@@ -26,11 +25,11 @@ export default class ScrollableArea extends React.PureComponent<IProps, IState> 
     ref: React.RefObject<HTMLDivElement>
     refBottom: React.RefObject<HTMLDivElement>
     timerId: number
+    scrollTop: number
 
     constructor(props: API) {
         super(props)
         this.state = {
-            scrollTop: 0,
             paddingTop: 0,
         }
         this.ref = React.createRef()
@@ -41,6 +40,7 @@ export default class ScrollableArea extends React.PureComponent<IProps, IState> 
             }))
         }
         this.timerId = setInterval(() => this.timer(), 1000)
+        this.scrollTop = 0
     }
 
     timer() {
@@ -58,16 +58,8 @@ export default class ScrollableArea extends React.PureComponent<IProps, IState> 
     }
 
     updateScrollTop() {
-        this.setState((state) => {
-            const { scrollTop } = this.ref.current
-            if (state.scrollTop === scrollTop) {
-                return null
-            }
-
-            return {
-                scrollTop
-            }
-        })
+        const { scrollTop } = this.ref.current
+        this.scrollTop = scrollTop
     }
 
     componentDidMount() {
