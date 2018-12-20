@@ -17,7 +17,7 @@ interface IState {
 // Distance to loader less than
 //    height * LOADER_SENSITIVITY
 // triggers loadMore() prop
-const LOADER_SENSITIVITY = 0.1
+const LOADER_SENSITIVITY = 0.4
 
 export default class ScrollableArea extends React.PureComponent<IProps, IState> {
     state: IState
