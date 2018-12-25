@@ -4,7 +4,7 @@ interface IProps {
     height: number
 }
 
-export default function TopPadding(props: IProps) {
+export default function Padding(props: IProps) {
     return (
         <div style={{ height: `${props.height}px` }} />
     )

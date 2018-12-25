@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { API } from './data-model';
-import TopPadding from './top-padding';
+import Padding from './top-padding';
 import LoadingIndicator from './loading-indicator';
 import ListElement from './list-element';
 
@@ -12,6 +12,7 @@ interface IProps extends API {
 
 interface IState {
     paddingTop: number,
+    skipTop: number,
 }
 
 // Distance to loader less than
@@ -19,32 +20,33 @@ interface IState {
 // triggers loadMore() prop
 const LOADER_SENSITIVITY = 0.4
 
+// How many px to show outside of scrollable area
+const VISIBILITY_PX = 200
+
 export default class ScrollableArea extends React.PureComponent<IProps, IState> {
     state: IState
     addPadding: (height: number) => void
     ref: React.RefObject<HTMLDivElement>
     refBottom: React.RefObject<HTMLDivElement>
     timerId: number
-    scrollTop: number
+    offsets: number[]
+    heights: number[]
 
     constructor(props: API) {
         super(props)
         this.state = {
             paddingTop: 0,
+            skipTop: 0,
         }
         this.ref = React.createRef()
         this.refBottom = React.createRef()
-        this.addPadding = (height: number) => {
-            this.setState(({ paddingTop }) => ({
-                paddingTop: paddingTop + height
-            }))
-        }
         this.timerId = setInterval(() => this.timer(), 1000)
-        this.scrollTop = 0
+        this.offsets = []
+        this.heights = []
     }
 
     timer() {
-        setTimeout(() => this.updateScrollTop())
+        setTimeout(() => this.updatePaddingTop())
         setTimeout(() => this.loadMoreIfNeeded())
     }
 
@@ -57,9 +59,17 @@ export default class ScrollableArea extends React.PureComponent<IProps, IState> 
         }
     }
 
-    updateScrollTop() {
-        const { scrollTop } = this.ref.current
-        this.scrollTop = scrollTop
+    updatePaddingTop() {
+        const scrollTop = this.ref.current.scrollTop - VISIBILITY_PX
+        const skipTop = this.offsets.findIndex(offset => offset > scrollTop)
+        const heights = skipTop === -1 ? this.heights : this.heights.slice(0, skipTop)
+        const paddingTop = heights.reduce((acc, h) => acc + h, 0)
+        this.setState({ skipTop, paddingTop })
+    }
+
+    updateDimensions = (ind: number, offset: number, height: number) => {
+        this.offsets[ind] = offset
+        this.heights[ind] = height
     }
 
     componentDidMount() {
@@ -71,21 +81,26 @@ export default class ScrollableArea extends React.PureComponent<IProps, IState> 
     }
 
     render() {
-        const { className = '' } = this.props;
-
+        const { className = '' } = this.props
+        const { skipTop, paddingTop } = this.state
+        const list = skipTop === -1 ? [] : this.props.list.slice(skipTop)
 
         return (
-            <div ref={this.ref} className={`${className} ${styles.container}`}>
-                <TopPadding height={this.state.paddingTop} />
+            <div
+                ref={this.ref}
+                className={`${className} ${styles.container}`}
+                style={{ position: 'relative' }} // for offsetTop to be counted from this DIV
+            >
+                <Padding height={paddingTop} />
                 <React.Fragment>
                     {
-                        this.props.list.map(
+                        list.map(
                             (el, ind) =>
                                 <ListElement
-                                    key={ind}
-                                    id={ind}
+                                    key={ind + skipTop}
+                                    id={ind + skipTop}
                                     element={el}
-                                    addPadding={this.addPadding}
+                                    reportDimensionsOnce={this.updateDimensions}
                                 />
                         )
                     }

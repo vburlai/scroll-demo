@@ -1,12 +1,15 @@
 @import './shared/pallette.css';
 
+.wrapper {
+    padding-bottom: 10px;
+}
+
 .element {
     color: var(--primary-color);
     font-family: sans-serif;
     background-color: var(--quaternary-color);
     border-radius: 10px;
     padding: 5px;
-    margin-bottom: 10px;
     display: flex;
 }
 
