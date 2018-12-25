@@ -15,6 +15,9 @@ interface IState {
     skipTop: number,
 }
 
+// Interval between updates
+const INTERVAL_MS = 500
+
 // Distance to loader less than
 //    height * LOADER_SENSITIVITY
 // triggers loadMore() prop
@@ -24,25 +27,18 @@ const LOADER_SENSITIVITY = 0.4
 const VISIBILITY_PX = 200
 
 export default class ScrollableArea extends React.PureComponent<IProps, IState> {
-    state: IState
-    addPadding: (height: number) => void
-    ref: React.RefObject<HTMLDivElement>
-    refBottom: React.RefObject<HTMLDivElement>
+    state: IState = {
+        paddingTop: 0,
+        skipTop: 0,
+    }
+    ref: React.RefObject<HTMLDivElement> = React.createRef()
+    refBottom: React.RefObject<HTMLDivElement> = React.createRef()
     timerId: number
-    offsets: number[]
-    heights: number[]
+    offsets: number[] = []
+    heights: number[] = []
 
     constructor(props: API) {
         super(props)
-        this.state = {
-            paddingTop: 0,
-            skipTop: 0,
-        }
-        this.ref = React.createRef()
-        this.refBottom = React.createRef()
-        this.timerId = setInterval(() => this.timer(), 1000)
-        this.offsets = []
-        this.heights = []
     }
 
     timer() {
@@ -73,6 +69,7 @@ export default class ScrollableArea extends React.PureComponent<IProps, IState> 
     }
 
     componentDidMount() {
+        this.timerId = setInterval(() => this.timer(), INTERVAL_MS)
         this.props.loadMore()
     }
 
@@ -83,7 +80,7 @@ export default class ScrollableArea extends React.PureComponent<IProps, IState> 
     render() {
         const { className = '' } = this.props
         const { skipTop, paddingTop } = this.state
-        const list = skipTop === -1 ? [] : this.props.list.slice(skipTop)
+        const visibleList = skipTop === -1 ? [] : this.props.list.slice(skipTop)
 
         return (
             <div
@@ -94,7 +91,7 @@ export default class ScrollableArea extends React.PureComponent<IProps, IState> 
                 <Padding height={paddingTop} />
                 <React.Fragment>
                     {
-                        list.map(
+                        visibleList.map(
                             (el, ind) =>
                                 <ListElement
                                     key={ind + skipTop}

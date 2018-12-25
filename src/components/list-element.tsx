@@ -10,12 +10,11 @@ interface IProps {
 }
 
 export default class ListElement extends React.PureComponent {
-    ref: React.RefObject<HTMLDivElement>
+    ref: React.RefObject<HTMLDivElement> = React.createRef()
     props: IProps
 
     constructor(props: IProps) {
         super(props)
-        this.ref = React.createRef()
     }
 
     componentDidMount() {

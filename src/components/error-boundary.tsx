@@ -9,12 +9,11 @@ interface IState {
 }
 
 export default class ErrorBoundary extends React.PureComponent<IProps, IState> {
-    state: IState
+    state: IState = { hasError: false }
     props: IProps
 
     constructor(props: IProps) {
         super(props);
-        this.state = { hasError: false };
     }
 
     static getDerivedStateFromError(error: any) {
