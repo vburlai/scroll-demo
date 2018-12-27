@@ -14,7 +14,7 @@ interface IState {
     list: Array<Element>
 }
 
-const DEFAULT_CHUNK_SIZE = 5
+const DEFAULT_CHUNK_SIZE = 50
 
 const LATENCY_MS = 100
 const TURNOVER_MS = 500

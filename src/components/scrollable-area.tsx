@@ -55,9 +55,23 @@ export default class ScrollableArea extends React.PureComponent<IProps, IState> 
         }
     }
 
+    nextSkipTop(scrollTop: number) {
+        // start from skipTop and go in direction of scroll
+        const { skipTop } = this.state
+        if (this.offsets[skipTop] < scrollTop) {
+            const list = this.offsets.slice(skipTop)
+            const indexOfVisible = list.findIndex(offset => offset >= scrollTop)
+            return indexOfVisible === -1 ? -1 : (skipTop + indexOfVisible)
+        } else {
+            const list = this.offsets.slice(0, skipTop + 1).reverse()
+            const indexOfHidden = list.findIndex(offset => offset < scrollTop)
+            return indexOfHidden === -1 ? 0 : (list.length - indexOfHidden)
+        }
+    }
+
     updatePaddingTop() {
         const scrollTop = this.ref.current.scrollTop - VISIBILITY_PX
-        const skipTop = this.offsets.findIndex(offset => offset > scrollTop)
+        const skipTop = this.nextSkipTop(scrollTop)
         const heights = skipTop === -1 ? this.heights : this.heights.slice(0, skipTop)
         const paddingTop = heights.reduce((acc, h) => acc + h, 0)
         this.setState({ skipTop, paddingTop })
